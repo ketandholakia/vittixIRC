@@ -1,0 +1,43 @@
+name: vittix_irc
+description: IRC client
+publish_to: none
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  shared_preferences: ^2.3.2
+  flutter_secure_storage: ^9.2.4
+  flutter_local_notifications: ^17.2.2
+  file_picker: ^8.1.2
+  share_plus: ^10.0.3
+  path_provider: ^2.1.5
+  path: ^1.9.1
+  crypto: ^3.0.6
+  encrypt: ^5.0.3
+  sqflite: ^2.4.2+1
+  url_launcher: ^6.3.1
+  http: ^1.2.2
+  mime: ^1.0.6
+  image_picker: ^1.1.2
+  http_parser: ^4.0.2
+  receive_sharing_intent: ^1.8.0
+  pasteboard: ^0.3.0
+  flutter_animate: ^4.5.2
+  flutter_slidable: ^4.0.3
+  showcaseview: ^5.0.2
+
+dependency_overrides:
+  receive_sharing_intent:
+    path: third_party/receive_sharing_intent
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
