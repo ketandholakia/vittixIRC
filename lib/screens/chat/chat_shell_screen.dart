@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
+import 'package:vittix_irc/core/irc_parser.dart';
 import 'package:vittix_irc/core/irc_socket_service.dart';
 import 'package:vittix_irc/models/server_notice.dart';
 import 'package:vittix_irc/screens/chat/global_message_search_screen.dart';
@@ -865,7 +866,7 @@ class _ChatShellScreenState extends State<ChatShellScreen> {
 
   Future<void> _handleServerNotice(ServerNotice notice) async {
     if (notice.type != ServerNoticeType.error) return;
-    if (!notice.rawLine.contains(' 475 ')) return;
+    if (IrcParser.numericFromLine(notice.rawLine) != '475') return;
 
     final channel = notice.channel;
     if (channel == null || channel.isEmpty) return;

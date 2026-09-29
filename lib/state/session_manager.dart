@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:vittix_irc/core/irc_socket_service.dart';
 import 'package:vittix_irc/models/server_config.dart';
 import 'package:vittix_irc/services/app_lifecycle_service.dart';
+import 'package:vittix_irc/services/keep_alive_service.dart';
 import 'package:vittix_irc/state/irc_session_controller.dart';
 
 class SessionManager {
@@ -65,6 +66,8 @@ class SessionManager {
     controller.addListener(_notifyChanged);
     _notifyChanged();
 
+    unawaited(KeepAliveService.start());
+
     return controller;
   }
 
@@ -80,6 +83,10 @@ class SessionManager {
 
     _controllers.remove(serverId);
     _sockets.remove(serverId);
+
+    if (_controllers.isEmpty) {
+      unawaited(KeepAliveService.stop());
+    }
 
     _notifyChanged();
   }

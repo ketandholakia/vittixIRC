@@ -33,6 +33,10 @@ class IrcSessionController extends ChangeNotifier {
   StreamSubscription<String>? _lineSub;
   StreamSubscription<IrcConnectionStatus>? _statusSub;
 
+  // Root batch id of an in-flight CHATHISTORY response, so backfilled
+  // messages neither increment unread counters nor trigger notifications.
+  String? _activeHistoryBatch;
+
   late IrcSessionState state;
 
   bool isFetchingChannels = false;
@@ -121,11 +125,8 @@ class IrcSessionController extends ChangeNotifier {
   }
 
   String? _hostmaskFromLine(String line) {
-    if (!line.startsWith(':')) return null;
-    final prefixEnd = line.indexOf(' ');
-    if (prefixEnd == -1) return null;
-
-    final prefix = line.substring(1, prefixEnd);
+    final prefix = IrcParser.splitLine(line)?.$1;
+    if (prefix == null || prefix.isEmpty) return null;
     return prefix.contains('!') ? prefix : null;
   }
 
@@ -295,6 +296,29 @@ class IrcSessionController extends ChangeNotifier {
     final normalizedTarget = _normalizeTarget(target);
     _ensureChannel(normalizedTarget, isPrivate: isPrivate);
     await selectTarget(normalizedTarget);
+
+    if (isPrivate) {
+      requestHistoryBackfill(normalizedTarget);
+    }
+  }
+
+  /// Asks a CHATHISTORY-capable server (bouncer or modern ircd) for messages
+  /// missed since the newest locally stored one. No-op on servers without
+  /// the capability (they reply 421, which is ignored).
+  Future<void> requestHistoryBackfill(String target) async {
+    final normalizedTarget = _normalizeTarget(target);
+    if (normalizedTarget.isEmpty) return;
+
+    final last = await _messageStorage.getLastMessageTime(
+      serverId: server.id,
+      target: normalizedTarget,
+    );
+
+    final from =
+        last ?? DateTime.now().subtract(const Duration(hours: 24));
+    final fromParam = IrcParser.formatChathistoryTimestamp(from);
+
+    irc.sendRaw('CHATHISTORY AFTER $normalizedTarget $fromParam * 100');
   }
 
   Future<void> loadMessages(String target) async {
@@ -621,12 +645,13 @@ class IrcSessionController extends ChangeNotifier {
       rawLines: [...existing.rawLines, line],
     );
 
-    final parts = line.split(' ');
+    // Params after the command, so indexes survive IRCv3 message-tags.
+    final params = IrcParser.splitLine(line)?.$3 ?? const <String>[];
 
-    if (line.contains(' 311 ')) {
-      if (parts.length >= 6) {
-        final user = parts[4];
-        final host = parts[5];
+    if (IrcParser.numericFromLine(line) == '311') {
+      if (params.length >= 4) {
+        final user = params[2];
+        final host = params[3];
         final realNameIndex = line.indexOf(' :');
         final realName =
             realNameIndex == -1 ? null : line.substring(realNameIndex + 2);
@@ -636,9 +661,9 @@ class IrcSessionController extends ChangeNotifier {
           realName: realName,
         );
       }
-    } else if (line.contains(' 312 ')) {
-      if (parts.length >= 5) {
-        final server = parts[4];
+    } else if (IrcParser.numericFromLine(line) == '312') {
+      if (params.length >= 3) {
+        final server = params[2];
         final infoIndex = line.indexOf(' :');
         final info = infoIndex == -1 ? null : line.substring(infoIndex + 2);
 
@@ -647,7 +672,7 @@ class IrcSessionController extends ChangeNotifier {
           serverInfo: info,
         );
       }
-    } else if (line.contains(' 319 ')) {
+    } else if (IrcParser.numericFromLine(line) == '319') {
       final channelIndex = line.indexOf(' :');
       if (channelIndex != -1) {
         final channels = line
@@ -658,18 +683,18 @@ class IrcSessionController extends ChangeNotifier {
 
         updated = updated.copyWith(channels: channels);
       }
-    } else if (line.contains(' 317 ')) {
-      if (parts.length >= 5) {
-        final idleSeconds = int.tryParse(parts[4]);
+    } else if (IrcParser.numericFromLine(line) == '317') {
+      if (params.length >= 3) {
+        final idleSeconds = int.tryParse(params[2]);
         if (idleSeconds != null) {
           updated = updated.copyWith(
             idle: '${idleSeconds ~/ 60} minutes idle',
           );
         }
       }
-    } else if (line.contains(' 330 ')) {
-      if (parts.length >= 5) {
-        updated = updated.copyWith(account: parts[4]);
+    } else if (IrcParser.numericFromLine(line) == '330') {
+      if (params.length >= 3) {
+        updated = updated.copyWith(account: params[2]);
       }
     }
 
@@ -1214,7 +1239,7 @@ class IrcSessionController extends ChangeNotifier {
   Future<void> _onLine(String line) async {
     await _handleInviteLine(line);
 
-    if (line.contains(' 303 ')) {
+    if (IrcParser.numericFromLine(line) == '303') {
       final idx = line.indexOf(' :');
       if (idx != -1) {
         final onlineNicks = line
@@ -1237,42 +1262,38 @@ class IrcSessionController extends ChangeNotifier {
     }
 
     // Handle LIST command numeric replies (321: Start, 322: Item, 323: End)
-    if (line.startsWith(':')) {
-      final parts = line.split(' ');
-      if (parts.length >= 2) {
-        final numeric = parts[1];
-        if (numeric == '321') {
-          isFetchingChannels = true;
-          networkChannels.clear();
-          notifyListeners();
-        } else if (numeric == '322') {
-          if (parts.length >= 5) {
-            final channel = parts[3];
-            final users = int.tryParse(parts[4]) ?? 0;
-            final topicIndex = line.indexOf(' :', line.indexOf(parts[4]));
-            final topic =
-                topicIndex != -1 ? line.substring(topicIndex + 2) : '';
+    final listNumeric = IrcParser.numericFromLine(line);
+    if (listNumeric == '321') {
+      isFetchingChannels = true;
+      networkChannels.clear();
+      notifyListeners();
+    } else if (listNumeric == '322') {
+      final split = IrcParser.splitLine(line);
+      if (split != null && split.$3.length >= 3) {
+        final channel = split.$3[1];
+        final users = int.tryParse(split.$3[2]) ?? 0;
+        final topicIndex = line.indexOf(' :');
+        final topic =
+            topicIndex != -1 ? line.substring(topicIndex + 2) : '';
 
-            networkChannels.add(IrcChannelInfo(
-              name: channel,
-              users: users,
-              topic: topic,
-            ));
+        networkChannels.add(IrcChannelInfo(
+          name: channel,
+          users: users,
+          topic: topic,
+        ));
 
-            // Debounce UI rebuilds when receiving thousands of items
-            if (!(_listUpdateTimer?.isActive ?? false)) {
-              _listUpdateTimer = Timer(const Duration(milliseconds: 500), () {
-                notifyListeners();
-              });
-            }
-          }
-          return; // Skip standard processing for 322 lines to prevent log flooding
-        } else if (numeric == '323') {
-          isFetchingChannels = false;
-          _listUpdateTimer?.cancel();
-          notifyListeners();
+        // Debounce UI rebuilds when receiving thousands of items
+        if (!(_listUpdateTimer?.isActive ?? false)) {
+          _listUpdateTimer = Timer(const Duration(milliseconds: 500), () {
+            notifyListeners();
+          });
         }
       }
+      return; // Skip standard processing for 322 lines to prevent log flooding
+    } else if (listNumeric == '323') {
+      isFetchingChannels = false;
+      _listUpdateTimer?.cancel();
+      notifyListeners();
     }
 
     final kickedChannel = IrcParser.parseKickedChannelForMe(
@@ -1307,6 +1328,18 @@ class IrcSessionController extends ChangeNotifier {
       return;
     }
 
+    // Keep channel user lists in sync for events from other users; must run
+    // before the early returns below so events for non-active channels are
+    // still reflected.
+    _maintainChannelUserLists(line);
+    _trackHistoryBatch(line);
+
+    final typing = IrcParser.parseTyping(line);
+    if (typing != null) {
+      _handleTypingEvent(typing);
+      return;
+    }
+
     if (IrcParser.isWhoisLine(line)) {
       _handleWhoisLine(line);
     }
@@ -1335,6 +1368,7 @@ class IrcSessionController extends ChangeNotifier {
         isPrivate: false,
       );
       saveChannels();
+      requestHistoryBackfill(joined);
       return;
     }
 
@@ -1389,18 +1423,25 @@ class IrcSessionController extends ChangeNotifier {
       final isActive =
           state.activeTarget?.toLowerCase() == target.toLowerCase();
 
+      // History backfill replays past messages: store them, but do not
+      // count unread or raise notifications for them.
+      final isBackfill = _isHistoryBackfill(line);
+
       _ensureChannel(target, isPrivate: isPrivate);
 
-      if (!isActive && !msg.isMe) {
+      if (!isBackfill && !isActive && !msg.isMe) {
         _incrementUnread(target);
       }
 
-      _maybeNotify(
-        target: target,
-        msg: msg,
-        isPrivate: isPrivate,
-      );
+      if (!isBackfill) {
+        _maybeNotify(
+          target: target,
+          msg: msg,
+          isPrivate: isPrivate,
+        );
+      }
 
+      _clearTyping(msg.sender, target);
       _addMessage(target, msg);
       return;
     }
@@ -1509,6 +1550,220 @@ class IrcSessionController extends ChangeNotifier {
     }).toList();
 
     state = state.copyWith(channels: channels);
+    notifyListeners();
+  }
+
+  void _maintainChannelUserLists(String line) {
+    final join = IrcParser.parseUserJoined(line);
+    if (join != null) {
+      _addChannelUser(join.channel, join.nick);
+      return;
+    }
+
+    final part = IrcParser.parseUserPart(line);
+    if (part != null) {
+      _removeChannelUser(part.channel, part.nick);
+      return;
+    }
+
+    final quitNick = IrcParser.parseQuitNick(line);
+    if (quitNick != null) {
+      _removeUserFromAllChannels(quitNick);
+      return;
+    }
+
+    final nickChange = IrcParser.parseAnyNickChange(line);
+    if (nickChange != null) {
+      _renameUserInAllChannels(nickChange.oldNick, nickChange.newNick);
+      return;
+    }
+
+    final kick = IrcParser.parseKickTarget(line);
+    if (kick != null) {
+      _removeChannelUser(kick.channel, kick.nick);
+    }
+  }
+
+  void _updateChannelUsers(String key, List<String> users) {
+    final usersMap = Map<String, List<String>>.from(state.usersByChannel);
+    usersMap[key] = users;
+
+    state = state.copyWith(usersByChannel: usersMap);
+    notifyListeners();
+  }
+
+  void _addChannelUser(String channel, String nick) {
+    final key = channel.toLowerCase();
+    final existing = state.usersByChannel[key];
+    if (existing == null) return;
+
+    final cleanNick = IrcParser.stripModePrefix(nick).toLowerCase();
+    final alreadyPresent = existing.any(
+      (u) => IrcParser.stripModePrefix(u).toLowerCase() == cleanNick,
+    );
+    if (alreadyPresent) return;
+
+    _updateChannelUsers(key, [...existing, nick]);
+  }
+
+  void _removeChannelUser(String channel, String nick) {
+    final key = channel.toLowerCase();
+    final existing = state.usersByChannel[key];
+    if (existing == null) return;
+
+    final cleanNick = IrcParser.stripModePrefix(nick).toLowerCase();
+    final updated = existing
+        .where((u) => IrcParser.stripModePrefix(u).toLowerCase() != cleanNick)
+        .toList();
+
+    if (updated.length == existing.length) return;
+
+    _updateChannelUsers(key, updated);
+  }
+
+  void _removeUserFromAllChannels(String nick) {
+    final cleanNick = nick.toLowerCase();
+    final usersMap = Map<String, List<String>>.from(state.usersByChannel);
+    var changed = false;
+
+    for (final entry in usersMap.entries) {
+      final updated = entry.value
+          .where((u) => IrcParser.stripModePrefix(u).toLowerCase() != cleanNick)
+          .toList();
+
+      if (updated.length != entry.value.length) {
+        usersMap[entry.key] = updated;
+        changed = true;
+      }
+    }
+
+    if (changed) {
+      state = state.copyWith(usersByChannel: usersMap);
+      notifyListeners();
+    }
+  }
+
+  void _renameUserInAllChannels(String oldNick, String newNick) {
+    final old = oldNick.toLowerCase();
+    final usersMap = Map<String, List<String>>.from(state.usersByChannel);
+    var changed = false;
+
+    for (final entry in usersMap.entries) {
+      var updated = entry.value;
+      var entryChanged = false;
+
+      for (var i = 0; i < updated.length; i++) {
+        final token = updated[i];
+        final bareToken = IrcParser.stripModePrefix(token);
+
+        if (bareToken.toLowerCase() == old) {
+          final prefix = token.substring(0, token.length - bareToken.length);
+
+          if (!entryChanged) updated = [...updated];
+          updated[i] = '$prefix$newNick';
+          entryChanged = true;
+        }
+      }
+
+      if (entryChanged) {
+        usersMap[entry.key] = updated;
+        changed = true;
+      }
+    }
+
+    if (changed) {
+      state = state.copyWith(usersByChannel: usersMap);
+      notifyListeners();
+    }
+  }
+
+  bool _isHistoryBackfill(String line) {
+    final batch = IrcParser.tagValueFromLine(line, 'batch');
+    if (batch == null || _activeHistoryBatch == null) return false;
+    return batch.split(';').first == _activeHistoryBatch;
+  }
+
+  void _trackHistoryBatch(String line) {
+    final split = IrcParser.splitLine(line);
+    if (split == null || split.$2 != 'BATCH') return;
+
+    final params = split.$3;
+    if (params.isEmpty) return;
+
+    final ref = params[0];
+    final isStart = ref.startsWith('+');
+    final id = ref.substring(1);
+
+    if (!isStart) {
+      if (_activeHistoryBatch == id) _activeHistoryBatch = null;
+      return;
+    }
+
+    final type = params.length >= 2 ? params[1].toLowerCase() : '';
+    if (type == 'draft/history' || type == 'chathistory') {
+      // Only the outermost history batch matters; nested batches are ignored.
+      _activeHistoryBatch ??= id;
+    }
+  }
+
+  List<String> typingUsersFor(String target) {
+    final users =
+        state.typingByTarget[_normalizeTarget(target).toLowerCase()];
+    if (users == null || users.isEmpty) return const [];
+
+    final cutoff = DateTime.now().subtract(const Duration(seconds: 6));
+    final active = users.entries
+        .where((e) => e.value.isAfter(cutoff))
+        .map((e) => e.key)
+        .toList()
+      ..sort();
+    return active;
+  }
+
+  void _handleTypingEvent(({String nick, String target, String mode}) event) {
+    if (event.nick.toLowerCase() == currentNick.toLowerCase()) return;
+
+    final key = event.target.toLowerCase();
+    final targetMap = Map<String, Map<String, DateTime>>.from(
+      state.typingByTarget,
+    );
+    final users = Map<String, DateTime>.from(targetMap[key] ?? const {});
+
+    if (event.mode == 'done') {
+      if (!users.containsKey(event.nick.toLowerCase())) return;
+      users.remove(event.nick.toLowerCase());
+    } else {
+      users[event.nick.toLowerCase()] = DateTime.now();
+    }
+
+    if (users.isEmpty) {
+      targetMap.remove(key);
+    } else {
+      targetMap[key] = users;
+    }
+
+    state = state.copyWith(typingByTarget: targetMap);
+    notifyListeners();
+  }
+
+  void _clearTyping(String nick, String target) {
+    final key = _normalizeTarget(target).toLowerCase();
+    final users = state.typingByTarget[key];
+    if (users == null || !users.containsKey(nick.toLowerCase())) return;
+
+    final updatedUsers = Map<String, DateTime>.from(users)
+      ..remove(nick.toLowerCase());
+
+    final targetMap = Map<String, Map<String, DateTime>>.from(
+      state.typingByTarget,
+    );
+    if (updatedUsers.isEmpty) {
+      targetMap.remove(key);
+    } else {
+      targetMap[key] = updatedUsers;
+    }
+
+    state = state.copyWith(typingByTarget: targetMap);
     notifyListeners();
   }
 

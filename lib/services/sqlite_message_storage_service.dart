@@ -61,6 +61,27 @@ class SqliteMessageStorageService {
     return rows.reversed.map(_fromRow).toList();
   }
 
+  /// Newest non-system message time for a target, used as the CHATHISTORY
+  /// backfill cursor. Returns null when nothing is stored locally.
+  Future<DateTime?> getLastMessageTime({
+    required String serverId,
+    required String target,
+  }) async {
+    final db = await AppDatabase.instance.database;
+
+    final rows = await db.query(
+      'messages',
+      columns: ['time'],
+      where: 'server_id = ? AND target = ? AND is_system = 0',
+      whereArgs: [serverId, target.toLowerCase()],
+      orderBy: 'time DESC',
+      limit: 1,
+    );
+
+    if (rows.isEmpty) return null;
+    return DateTime.tryParse(rows.first['time'] as String? ?? '');
+  }
+
   Future<void> clearMessages({
     required String serverId,
     required String target,

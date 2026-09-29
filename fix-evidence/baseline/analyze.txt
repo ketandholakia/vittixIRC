@@ -1,0 +1,18 @@
+Analyzing vittixIRC...                                          
+
+   info - 'ShowCaseWidget' is deprecated and shouldn't be used. This will be removed in v6.0.0. Please use `ShowcaseView.register()` instead. Try replacing the use of the deprecated member with the replacement - lib\main.dart:61:12 - deprecated_member_use
+   info - Method invocation or property access on a 'dynamic' target. Try giving the target a type - lib\screens\chat\chat_shell_screen.dart:127:18 - avoid_dynamic_calls
+   info - Method invocation or property access on a 'dynamic' target. Try giving the target a type - lib\screens\chat\chat_shell_screen.dart:127:18 - avoid_dynamic_calls
+   info - Method invocation or property access on a 'dynamic' target. Try giving the target a type - lib\screens\chat\chat_shell_screen.dart:128:19 - avoid_dynamic_calls
+   info - Method invocation or property access on a 'dynamic' target. Try giving the target a type - lib\screens\chat\chat_shell_screen.dart:128:19 - avoid_dynamic_calls
+   info - Method invocation or property access on a 'dynamic' target. Try giving the target a type - lib\screens\chat\chat_shell_screen.dart:129:40 - avoid_dynamic_calls
+   info - Method invocation or property access on a 'dynamic' target. Try giving the target a type - lib\screens\chat\chat_shell_screen.dart:133:9 - avoid_dynamic_calls
+   info - Method invocation or property access on a 'dynamic' target. Try giving the target a type - lib\screens\chat\chat_shell_screen.dart:134:14 - avoid_dynamic_calls
+   info - Method invocation or property access on a 'dynamic' target. Try giving the target a type - lib\screens\chat\chat_shell_screen.dart:139:9 - avoid_dynamic_calls
+   info - Method invocation or property access on a 'dynamic' target. Try giving the target a type - lib\screens\chat\chat_shell_screen.dart:145:10 - avoid_dynamic_calls
+   info - Method invocation or property access on a 'dynamic' target. Try giving the target a type - lib\screens\chat\chat_shell_screen.dart:146:14 - avoid_dynamic_calls
+   info - 'of' is deprecated and shouldn't be used. This will be removed in v6.0.0. please use `ShowcaseView.get()` instead. Try replacing the use of the deprecated member with the replacement - lib\screens\server\server_list_screen.dart:176:20 - deprecated_member_use
+   info - 'startShowCase' is deprecated and shouldn't be used. This will be removed in v6.0.0. please use `ShowcaseView.get().startShowCase` instead. Try replacing the use of the deprecated member with the replacement - lib\screens\server\server_list_screen.dart:176:32 - deprecated_member_use
+   info - Method invocation or property access on a 'dynamic' target. Try giving the target a type - lib\services\backup_service.dart:115:38 - avoid_dynamic_calls
+
+14 issues found. (ran in 474.9s)

@@ -55,6 +55,10 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   bool _showOpsOnly = false;
   StreamSubscription<List<SharedMediaFile>>? _shareSub;
   StreamSubscription<String>? _volumeKeySub;
+  Timer? _typingDoneTimer;
+  Timer? _typingRefreshTimer;
+  DateTime? _lastTypingSentAt;
+  bool _showTypingIndicator = false;
 
   @override
   void initState() {
@@ -64,8 +68,13 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     widget.controller.addListener(_onControllerChanged);
     widget.controller.loadMessages(widget.channelName);
     _scrollCtrl.addListener(_onScroll);
-    _consumePendingSharedFiles();
-    _consumePendingSharedText();
+    // Consuming shared files/text touches ScaffoldMessenger, which is not
+    // allowed until after the first frame has built.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _consumePendingSharedFiles();
+      _consumePendingSharedText();
+    });
     _shareSub = ShareIntentService.instance.sharedFiles.listen((_) {
       _consumePendingSharedFiles();
       _consumePendingSharedText();
@@ -86,6 +95,16 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
             ?.insertSharedText(widget.initialSharedText!);
       });
     }
+
+    // Rebuild only when the typing indicator's visibility flips (its state
+    // auto-expires ~6s after the last TYPING event).
+    _typingRefreshTimer = Timer.periodic(const Duration(seconds: 2), (_) {
+      final hasTyping =
+          widget.controller.typingUsersFor(_displayTarget).isNotEmpty;
+      if (hasTyping != _showTypingIndicator && mounted) {
+        setState(() => _showTypingIndicator = hasTyping);
+      }
+    });
   }
 
   void _onControllerChanged() {
@@ -552,6 +571,8 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     _scrollCtrl.removeListener(_onScroll);
     _shareSub?.cancel();
     _volumeKeySub?.cancel();
+    _typingDoneTimer?.cancel();
+    _typingRefreshTimer?.cancel();
     _scrollCtrl.dispose();
     _messageKeys.clear();
     _uploadController.dispose();
@@ -639,7 +660,53 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   }
 
   void _sendMessage(String text) {
+    _sendTypingDone();
     widget.controller.sendMessage(_displayTarget, text);
+  }
+
+  void _onInputTextChanged(String text) {
+    if (text.trim().isEmpty) {
+      _sendTypingDone();
+      return;
+    }
+
+    final now = DateTime.now();
+    final last = _lastTypingSentAt;
+    if (last == null || now.difference(last).inSeconds >= 3) {
+      _lastTypingSentAt = now;
+      widget.controller.irc.sendTyping(_displayTarget, true);
+    }
+
+    _typingDoneTimer?.cancel();
+    _typingDoneTimer = Timer(const Duration(seconds: 6), _sendTypingDone);
+  }
+
+  void _sendTypingDone() {
+    _typingDoneTimer?.cancel();
+    _typingDoneTimer = null;
+    _lastTypingSentAt = null;
+    widget.controller.irc.sendTyping(_displayTarget, false);
+  }
+
+  Widget _buildTypingIndicator() {
+    final users = widget.controller.typingUsersFor(_displayTarget);
+    if (users.isEmpty) return const SizedBox.shrink();
+
+    final shown = users.take(2).toList();
+    final text = shown.length == 1
+        ? '${shown.first} is typing…'
+        : '${shown.join(' and ')} are typing…';
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
+      child: Text(
+        text,
+        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              fontStyle: FontStyle.italic,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+      ),
+    );
   }
 
   bool get _isPrivateMessage => !_displayTarget.startsWith('#');
@@ -1757,6 +1824,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                         ),
                 ),
                 const Divider(height: 1),
+                _buildTypingIndicator(),
                 status == IrcConnectionStatus.connected
                     ? MessageInput(
                         key: _messageInputKey,
@@ -1769,6 +1837,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                             .toList(),
                         uploadController: _uploadController,
                         onOpenUploadQueue: _openUploadQueue,
+                        onTextChanged: _onInputTextChanged,
                         onSend: _sendMessage,
                       )
                     : SafeArea(

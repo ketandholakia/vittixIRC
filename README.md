@@ -8,12 +8,14 @@ Vittix IRC is designed to provide a robust mobile chatting experience with a cle
 
 * **Multi-Server Sessions:** Connect to and manage multiple IRC networks (e.g., Libera Chat, OFTC) simultaneously.
 * **Modern UI Architecture:** Seamlessly switch between channels and private messages using a sliding drawer shell interface.
-* **Bouncer & SASL Support:** First-class support for IRC Bouncers (ZNC, soju) and secure SASL PLAIN authentication.
-* **Secure Storage & Encrypted Backups:** Server passwords are kept safe using the device's native keychain (`flutter_secure_storage`). You can also export/import AES-encrypted, password-protected profile backups.
+* **Bouncer & SASL Support:** First-class support for IRC Bouncers (ZNC, soju) and secure authentication via SASL SCRAM-SHA-256 (with PLAIN fallback).
+* **IRCv3 Capabilities:** `server-time` timestamps, `chathistory` gap backfill on join/reconnect, and `typing` indicators.
+* **Secure Connections & Storage:** TLS with trust-on-first-use (TOFU) certificate pinning for self-signed servers, STS policy enforcement, passwords in the device keychain (`flutter_secure_storage`), and AES-encrypted, password-protected profile backups.
+* **Background Keep-Alive:** An Android foreground service keeps your sessions connected while the app is backgrounded.
+* **Smart Reconnects:** Exponential backoff, flap detection for unstable links, and auto-reconnect that halts on authentication failures instead of hammering the server.
 * **Smart Notifications:** Receive local push notifications for private messages and @mentions, complete with deep-linking that routes you straight to the active channel when tapped.
-* **Message Persistence:** Chat history is saved locally so you don't lose context when switching channels or restarting the app.
+* **Message Persistence:** Chat history is saved locally (SQLite) so you don't lose context when switching channels or restarting the app.
 * **Intelligent Auto-complete:** Start typing `/` to see command suggestions, or `@` to auto-complete nicknames from the current channel.
-* **Background Lifecycle Handling:** Automatically pauses and gracefully reconnects dropped socket connections when the app transitions between the foreground and background.
 
 ## 🚀 Supported Commands
 

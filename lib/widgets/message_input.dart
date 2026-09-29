@@ -14,6 +14,7 @@ class MessageInput extends StatefulWidget {
   final List<String> commandSuggestions;
   final List<String> nickSuggestions;
   final ValueChanged<String> onSend;
+  final ValueChanged<String>? onTextChanged;
   final VoidCallback? onOpenUploadQueue;
   final VoidCallback? onHistoryPrevious;
   final VoidCallback? onHistoryNext;
@@ -25,6 +26,7 @@ class MessageInput extends StatefulWidget {
     required this.commandSuggestions,
     required this.nickSuggestions,
     required this.onSend,
+    this.onTextChanged,
     this.onOpenUploadQueue,
     this.onHistoryPrevious,
     this.onHistoryNext,
@@ -50,6 +52,11 @@ class MessageInputState extends State<MessageInput> {
     super.initState();
     widget.uploadController.addListener(_onUploadChanged);
     _controller.addListener(_updateCompletions);
+    _controller.addListener(_notifyTextChanged);
+  }
+
+  void _notifyTextChanged() {
+    widget.onTextChanged?.call(_controller.text);
   }
 
   void _onUploadChanged() {
@@ -72,6 +79,7 @@ class MessageInputState extends State<MessageInput> {
   void dispose() {
     widget.uploadController.removeListener(_onUploadChanged);
     _controller.removeListener(_updateCompletions);
+    _controller.removeListener(_notifyTextChanged);
     _focusNode.dispose();
     _controller.dispose();
     super.dispose();

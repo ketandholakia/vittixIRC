@@ -20,6 +20,7 @@ class IrcSessionState {
   final Map<String, bool> hasMoreHistoryByTarget;
   final Map<String, bool> loadingHistoryByTarget;
   final Map<String, int> historyOffsetByTarget;
+  final Map<String, Map<String, DateTime>> typingByTarget;
 
   const IrcSessionState({
     required this.server,
@@ -36,6 +37,7 @@ class IrcSessionState {
     required this.hasMoreHistoryByTarget,
     required this.loadingHistoryByTarget,
     required this.historyOffsetByTarget,
+    this.typingByTarget = const {},
   });
 
   IrcSessionState copyWith({
@@ -54,6 +56,7 @@ class IrcSessionState {
     Map<String, bool>? hasMoreHistoryByTarget,
     Map<String, bool>? loadingHistoryByTarget,
     Map<String, int>? historyOffsetByTarget,
+    Map<String, Map<String, DateTime>>? typingByTarget,
   }) {
     return IrcSessionState(
       server: server ?? this.server,
@@ -75,6 +78,7 @@ class IrcSessionState {
           loadingHistoryByTarget ?? this.loadingHistoryByTarget,
       historyOffsetByTarget:
           historyOffsetByTarget ?? this.historyOffsetByTarget,
+      typingByTarget: typingByTarget ?? this.typingByTarget,
     );
   }
 }

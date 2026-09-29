@@ -1,0 +1,3 @@
+00:00 +0: loading D:/ketan/github/vittixIRC/test/widget_test.dart
+00:00 +0: App builds
+00:15 +1: All tests passed!
