@@ -25,7 +25,7 @@ Repo: https://github.com/ketandholakia/vittixIRC.git
 Builds:
   - versionName: 1.0.0
     versionCode: 1
-    commit: v1.0.0    # tag must exist in the repo before submitting
+    commit: aa8e414b57f3c32b2d972a429b7c3884b60bb136    # v1.0.0
     output: build/app/outputs/flutter-apk/app-release.apk
     srclibs:
       - flutter@3.44.0

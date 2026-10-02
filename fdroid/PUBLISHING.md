@@ -71,8 +71,7 @@ cd fdroiddata
 git checkout -b io.github.ketandholakia.virc
 cp /path/to/vittixIRC/fdroid/fdroiddata/io.github.ketandholakia.virc.yml \
    metadata/io.github.ketandholakia.virc.yml
-# no placeholders left in the recipe; just confirm `commit: v1.0.0` matches
-# the pushed tag, then:
+# nothing to change in the recipe - it pins the full hash of tag `v1.0.0`:
 git add metadata/io.github.ketandholakia.virc.yml
 git commit -m "New app: VIRC"
 git push -u origin io.github.ketandholakia.virc
