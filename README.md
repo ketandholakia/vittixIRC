@@ -70,7 +70,7 @@ lib/
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/vittixIRC.git
+   git clone https://github.com/ketandholakia/vittixIRC.git
    cd vittixIRC
    ```
 
@@ -91,6 +91,10 @@ lib/
 * `flutter_local_notifications` - Native background and foreground notifications.
 * `encrypt` & `crypto` - AES-256-CBC encryption for secure configuration backups.
 * `file_picker` & `share_plus` - OS-level file handling for importing/exporting backups.
+
+## 📄 License
+
+GPL-3.0-or-later — see the [LICENSE](LICENSE) file.
 
 ---
 

@@ -5,6 +5,9 @@ merged submission. This file complements `fdroid/fdroiddata/` (the build recipe)
 
 ## What is already done
 
+- [x] **License** — GPL-3.0-or-later; `LICENSE` file at the repo root.
+- [x] **Application ID** — `io.github.ketandholakia.virc` (namespace, Kotlin
+      packages and fdroiddata metadata file renamed).
 - [x] **FOSS dependency check** — all Dart/Flutter and Android dependencies are
       free software. No Firebase, no Google Play services, no ads, no tracking.
       → No `AntiFeatures` needed in the metadata.
@@ -18,38 +21,27 @@ merged submission. This file complements `fdroid/fdroiddata/` (the build recipe)
 - [x] **Branding** — VIRC branding pack integrated: launcher icons (all
       densities), Android adaptive icon (incl. the Android 13 monochrome layer),
       native launch splash (light/dark), fastlane listing icon, and app naming.
-- [x] **Draft build recipe** at `fdroid/fdroiddata/com.example.vittix_irc.yml`.
+- [x] **Build recipe** at `fdroid/fdroiddata/io.github.ketandholakia.virc.yml`.
 - [x] **Workspace/agent files excluded from git** — they must not become public
       when the repository is pushed (AGENTS.md, SOUL.md, USER.md, IDENTITY.md,
       HEARTBEAT.md, TOOLS.md, todo.md, `.agents/`, `.openclaw/`, `.openclaw-attachments/`).
 
-## Decisions to make (blocking)
+## Decisions (resolved)
 
-1. **License.** F-Droid requires a FOSS license with a `LICENSE` file in the
-   repo. Recommendation: **GPL-3.0-or-later** (standard for IRC clients,
-   copyleft). Alternatives: Apache-2.0, MIT.
-2. **Application ID.** `com.example.vittix_irc` is a placeholder and must be
-   changed **before** the first release — the ID is permanent once published
-   (it is the app's identity forever; changing it later forces users to
-   reinstall and breaks updates).
-   Recommended pattern: `io.github.<github-username>.vittixirc`
-   (or a reversed domain you own, e.g. `dev.<domain>.<app>`).
-   When the ID is chosen: update `namespace` + `applicationId` in
-   `android/app/build.gradle.kts`, move
-   `android/app/src/main/kotlin/<old package dir>` to match, update the
-   `package` lines in `MainActivity.kt` / `KeepAliveService.kt`, and rename the
-   fdroiddata metadata file to `<appid>.yml`.
-3. **Public repository host + URL** (GitHub, Codeberg, GitLab, …) and the
-   author name to credit (`AuthorName` in the metadata).
+1. **License:** GPL-3.0-or-later — `LICENSE` added at the repo root.
+2. **Application ID:** `io.github.ketandholakia.virc` — applied everywhere
+   (namespace, Kotlin package, fdroiddata metadata file name).
+3. **Repository:** `https://github.com/ketandholakia/vittixIRC` · author credit:
+   Ketan Dholakia.
 
 ## Step 1 — Publish the source repository
 
 ```powershell
 # from the project directory (D:\ketan\github\vittixIRC)
-git config user.name  "Your Name"          # real identity for public commits
-git config user.email "you@example.com"
+git config user.name  "Ketan Dholakia"     # identity for public commits
+git config user.email "ketandholakia@users.noreply.github.com"
 
-git remote add origin https://github.com/<you>/vittixIRC.git
+git remote add origin https://github.com/ketandholakia/vittixIRC.git
 git checkout main
 git merge fix/all-issues                   # brings in the release prep commits
 git push -u origin main
@@ -59,8 +51,7 @@ git tag -a v1.0.0 -m "VIRC 1.0.0"
 git push origin v1.0.0
 ```
 
-Also update the clone URL in `README.md` (currently
-`github.com/yourusername/vittixIRC`).
+The README clone URL is already updated to the real repository.
 
 ## Step 2 — Submit to fdroiddata (merge request)
 
@@ -74,15 +65,14 @@ already have one, so no RFP is needed.
 ```bash
 git clone https://gitlab.com/<your-gitlab-user>/fdroiddata.git
 cd fdroiddata
-git checkout -b <appid>
-cp /path/to/vittixIRC/fdroid/fdroiddata/com.example.vittix_irc.yml \
-   metadata/<appid>.yml
-# edit metadata/<appid>.yml:
-#   - replace every <...> placeholder
-#   - make sure `commit: v1.0.0` matches the pushed tag
-git add metadata/<appid>.yml
+git checkout -b io.github.ketandholakia.virc
+cp /path/to/vittixIRC/fdroid/fdroiddata/io.github.ketandholakia.virc.yml \
+   metadata/io.github.ketandholakia.virc.yml
+# no placeholders left in the recipe; just confirm `commit: v1.0.0` matches
+# the pushed tag, then:
+git add metadata/io.github.ketandholakia.virc.yml
 git commit -m "New app: VIRC"
-git push -u origin <appid>
+git push -u origin io.github.ketandholakia.virc
 ```
 
 3. Open the merge request (target branch: `master` of `fdroid/fdroiddata`).
@@ -95,7 +85,8 @@ git push -u origin <appid>
    F-Droid's key and published (index updates within roughly a day).
 
 Optional (local sanity checks, requires fdroidserver):
-`fdroid lint <appid>` and `fdroid rewritemeta <appid>`.
+`fdroid lint io.github.ketandholakia.virc` and
+`fdroid rewritemeta io.github.ketandholakia.virc`.
 
 Alternative: file a request for packaging at <https://gitlab.com/fdroid/rfp>
 (slower — a volunteer packager would write the recipe; we already have one).

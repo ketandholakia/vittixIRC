@@ -1,10 +1,9 @@
-# VIRC (Vittix IRC Chat Client) — fdroiddata build recipe (draft)
+# VIRC (Vittix IRC Chat Client) — fdroiddata build recipe
 #
 # How to use:
-#   1. Rename this file to <appid>.yml (matching the app's final Application ID).
-#   2. Replace every <...> placeholder below.
-#   3. Copy it to metadata/<appid>.yml in a fork of https://gitlab.com/fdroid/fdroiddata
-#      and open a merge request. See fdroid/PUBLISHING.md for the full walkthrough.
+#   1. Copy this file to metadata/io.github.ketandholakia.virc.yml in a fork of
+#      https://gitlab.com/fdroid/fdroiddata
+#   2. Open a merge request. See fdroid/PUBLISHING.md for the full walkthrough.
 #
 # Modeled on other Flutter recipes (e.g. fr.emersion.goguma) and kept in sync
 # with the app repo: version 1.0.0+1, built with Flutter 3.44.0.
@@ -12,16 +11,16 @@
 Categories:
   - Internet
   - Messaging
-License: GPL-3.0-or-later    # TODO: keep in sync with the LICENSE added to the repo
-AuthorName: <your name>
-SourceCode: https://github.com/<github-user>/vittixIRC
-IssueTracker: https://github.com/<github-user>/vittixIRC/issues
-Changelog: https://github.com/<github-user>/vittixIRC/releases
+License: GPL-3.0-or-later
+AuthorName: Ketan Dholakia
+SourceCode: https://github.com/ketandholakia/vittixIRC
+IssueTracker: https://github.com/ketandholakia/vittixIRC/issues
+Changelog: https://github.com/ketandholakia/vittixIRC/releases
 
 AutoName: VIRC
 
 RepoType: git
-Repo: https://github.com/<github-user>/vittixIRC.git
+Repo: https://github.com/ketandholakia/vittixIRC.git
 
 Builds:
   - versionName: 1.0.0

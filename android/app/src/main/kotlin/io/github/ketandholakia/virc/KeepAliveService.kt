@@ -1,4 +1,4 @@
-package com.example.vittix_irc
+package io.github.ketandholakia.virc
 
 import android.app.Notification
 import android.app.NotificationChannel

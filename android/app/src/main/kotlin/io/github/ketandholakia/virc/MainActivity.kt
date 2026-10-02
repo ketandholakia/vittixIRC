@@ -1,4 +1,4 @@
-package com.example.vittix_irc
+package io.github.ketandholakia.virc
 
 import android.Manifest
 import android.content.Intent
