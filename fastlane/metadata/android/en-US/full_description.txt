@@ -1,0 +1,18 @@
+Vittix IRC is a modern, feature-rich multi-server IRC client for Android.
+
+Features:
+
+* Multi-server: stay connected to several IRC networks (Libera Chat, OFTC, and any other) at once
+* Clean shell-and-drawer interface for switching quickly between channels and private messages
+* Bouncer support (ZNC, soju) and SASL authentication (SCRAM-SHA-256, PLAIN fallback)
+* IRCv3 support: server-time timestamps, chathistory gap backfill on join/reconnect, typing indicators
+* Secure connections: TLS with trust-on-first-use certificate pinning for self-signed servers, plus STS policy enforcement
+* Passwords stored in the device keychain; profile backups are AES-encrypted and password-protected
+* Background keep-alive service keeps sessions connected while the app is in the background
+* Smart reconnects with exponential backoff and flap detection
+* Local notifications for private messages and mentions, with deep links straight into the channel
+* Message history saved locally (SQLite) with pagination
+* Slash commands: /join, /part, /msg, /query, /nick, /me, /topic, /identify, /whois, moderation commands and more
+* Nickname and command auto-complete
+
+Vittix IRC is free and open source software. There are no ads, no analytics and no tracking — your messages go directly to the IRC server you choose.

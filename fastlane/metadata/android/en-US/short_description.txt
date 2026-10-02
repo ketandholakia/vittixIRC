@@ -1,0 +1,1 @@
+Multi-server IRC client: SASL, bouncers, IRCv3, notifications
