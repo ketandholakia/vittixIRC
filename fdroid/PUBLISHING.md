@@ -1,10 +1,13 @@
 # Publishing VIRC (Vittix IRC) on F-Droid
 
-Status of this repository's F-Droid readiness and the exact steps from here to a
-merged submission. This file complements `fdroid/fdroiddata/` (the build recipe).
+Status: source published at <https://github.com/ketandholakia/vittixIRC>
+(tag `v1.0.0`). Next step: the fdroiddata merge request (Step 2 below).
+This file complements `fdroid/fdroiddata/` (the build recipe).
 
 ## What is already done
 
+- [x] **Source published** — <https://github.com/ketandholakia/vittixIRC>,
+      tagged `v1.0.0` (2026-10-02).
 - [x] **License** — GPL-3.0-or-later; `LICENSE` file at the repo root.
 - [x] **Application ID** — `io.github.ketandholakia.virc` (namespace, Kotlin
       packages and fdroiddata metadata file renamed).
