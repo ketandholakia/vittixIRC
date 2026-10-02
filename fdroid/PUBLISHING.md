@@ -1,7 +1,8 @@
 # Publishing VIRC (Vittix IRC) on F-Droid
 
 Status: source published at <https://github.com/ketandholakia/vittixIRC>
-(tag `v1.0.0`). Next step: the fdroiddata merge request (Step 2 below).
+(tag `v1.0.0`); fdroiddata MR open:
+<https://gitlab.com/fdroid/fdroiddata/-/merge_requests/50931>.
 This file complements `fdroid/fdroiddata/` (the build recipe).
 
 ## What is already done
@@ -77,11 +78,17 @@ git commit -m "New app: VIRC"
 git push -u origin io.github.ketandholakia.virc
 ```
 
+Note: the fdroiddata copy must be **comment-free and LF-only** — the
+`fdroid rewritemeta` CI job fails if the committed file differs from the
+normalized form (no comments, no CRLF line endings).
+
 3. Open the merge request (target branch: `master` of `fdroid/fdroiddata`).
    The CI pipeline automatically runs a build from your recipe (this is the
-   real test — a full Flutter build on their build machines takes a while).
-   If it fails, check the log; for Flutter apps the usual fixes are adjusting
-   the pinned `srclibs: flutter@<version>` or adding `sudo:` packages.
+   real test — a full Flutter build on their build machines takes a while;
+   for VIRC the `fdroid build` job already succeeded on the first run).
+   If it fails, check the log; the most common issues are the
+   comment/line-ending normalization note above, the pinned
+   `srclibs: flutter@<version>`, or missing `sudo:` packages.
    Push updates to the branch to re-run CI.
 4. Answer reviewer questions. Once merged, the app is built, signed with
    F-Droid's key and published (index updates within roughly a day).
