@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 360">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#0758FF"/><stop offset=".6" stop-color="#08A8FF"/><stop offset="1" stop-color="#15D8E7"/></linearGradient></defs>
+<g transform="translate(20,20) scale(.62)"><path d="M112 64h288c52 0 88 36 88 88v188c0 52-36 88-88 88H224l-92 72 18-72h-38c-52 0-88-36-88-88V152c0-52 36-88 88-88z" fill="url(#g)"/><path d="M110 142l92 212c9 21 25 31 47 31 21 0 37-10 48-31l101-212h-78l-70 156-61-156z" fill="#fff"/><circle cx="338" cy="366" r="14" fill="#fff"/><circle cx="378" cy="366" r="14" fill="#45A9FF"/><circle cx="418" cy="366" r="14" fill="#19D8E9"/></g>
+<text x="410" y="205" font-family="Arial, Helvetica, sans-serif" font-size="150" font-weight="800" letter-spacing="-8" fill="#0C1B3A"><tspan fill="url(#g)">V</tspan><tspan>IRC</tspan></text>
+<text x="418" y="285" font-family="Arial, Helvetica, sans-serif" font-size="38" letter-spacing="2" fill="#63708A">Vittix IRC Chat Client</text>
+</svg>

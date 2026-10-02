@@ -1,4 +1,4 @@
-# Vittix IRC - Development Roadmap
+# VIRC — Development Roadmap
 
 ## Phase 1: Architecture & Stability (High Priority)
 - [x] **Database Migration:** Replace `shared_preferences` for message history with `sqflite` or `Isar` to prevent memory bloat and UI lag.

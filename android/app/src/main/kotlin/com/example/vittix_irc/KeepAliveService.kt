@@ -113,7 +113,7 @@ class KeepAliveService : Service() {
         const val CHANNEL_ID = "vittix_keep_alive"
         const val NOTIFICATION_ID = 4711
         const val EXTRA_TITLE = "title"
-        const val DEFAULT_TITLE = "Vittix IRC"
+        const val DEFAULT_TITLE = "VIRC"
         private const val WAKE_LOCK_TAG = "vittix_irc:keepalive"
     }
 }

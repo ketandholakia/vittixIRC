@@ -55,3 +55,6 @@ app.*.map.json
 /TOOLS.md
 /USER.md
 /todo.md
+
+# Branding pack source folder (integrated into assets/branding/; local copy only)
+/VIRC_Flutter_Branding_Pack/

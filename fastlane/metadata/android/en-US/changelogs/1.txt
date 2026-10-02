@@ -1,1 +1,1 @@
-First F-Droid release. Multi-server IRC with SASL (SCRAM-SHA-256) and bouncer support, IRCv3 server-time and chathistory, TLS with certificate pinning, encrypted profile backups, background keep-alive, and smart notifications.
+First release of VIRC (Vittix IRC Chat Client). Multi-server IRC with SASL (SCRAM-SHA-256) and bouncer support, IRCv3 server-time and chathistory, TLS with certificate pinning, encrypted profile backups, background keep-alive, and smart notifications.

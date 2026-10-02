@@ -1,4 +1,4 @@
-# Publishing Vittix IRC on F-Droid
+# Publishing VIRC (Vittix IRC) on F-Droid
 
 Status of this repository's F-Droid readiness and the exact steps from here to a
 merged submission. This file complements `fdroid/fdroiddata/` (the build recipe).
@@ -15,6 +15,9 @@ merged submission. This file complements `fdroid/fdroiddata/` (the build recipe)
 - [x] **Fastlane metadata** added at `fastlane/metadata/android/en-US/`
       (title, short description, full description, changelog for versionCode 1).
       This is read by F-Droid automatically from the tagged commit.
+- [x] **Branding** — VIRC branding pack integrated: launcher icons (all
+      densities), Android adaptive icon (incl. the Android 13 monochrome layer),
+      native launch splash (light/dark), fastlane listing icon, and app naming.
 - [x] **Draft build recipe** at `fdroid/fdroiddata/com.example.vittix_irc.yml`.
 - [x] **Workspace/agent files excluded from git** — they must not become public
       when the repository is pushed (AGENTS.md, SOUL.md, USER.md, IDENTITY.md,
@@ -52,7 +55,7 @@ git merge fix/all-issues                   # brings in the release prep commits
 git push -u origin main
 
 # F-Droid requires a tag for every release commit:
-git tag -a v1.0.0 -m "Vittix IRC 1.0.0"
+git tag -a v1.0.0 -m "VIRC 1.0.0"
 git push origin v1.0.0
 ```
 
@@ -78,7 +81,7 @@ cp /path/to/vittixIRC/fdroid/fdroiddata/com.example.vittix_irc.yml \
 #   - replace every <...> placeholder
 #   - make sure `commit: v1.0.0` matches the pushed tag
 git add metadata/<appid>.yml
-git commit -m "New app: Vittix IRC"
+git commit -m "New app: VIRC"
 git push -u origin <appid>
 ```
 
@@ -112,8 +115,8 @@ Optionally add `fastlane/metadata/android/en-US/changelogs/<versionCode>.txt`
 
 - **Screenshots** — add `fastlane/metadata/android/en-US/images/phoneScreenshots/`.
   Capture from a device/emulator (portrait, ideally 1080×1920+).
-- **App icon** — `fastlane/.../images/icon.png` (512×512). Candidates are being
-  prepared; replace `android/app/src/main/res/mipmap-*/ic_launcher.png` too.
+- **In-app logo** — the wordmark/icon assets are bundled under `assets/branding/`
+  and can be shown in-app (e.g. empty states or an about screen).
 - **Reproducible builds** — publish your own signed release APK; if F-Droid can
   rebuild it bit-for-bit, users get stronger guarantees. Read
   <https://f-droid.org/en/docs/Reproducible_Builds/> before the second release.

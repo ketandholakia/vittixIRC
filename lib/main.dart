@@ -63,7 +63,7 @@ class _IrcMobileAppState extends State<IrcMobileApp> {
       onFinish: _markTutorialSeen,
       builder: (context) => MaterialApp(
         navigatorKey: AppNavigator.navigatorKey,
-        title: 'Vittix IRC',
+        title: 'VIRC',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           useMaterial3: true,

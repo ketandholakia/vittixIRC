@@ -68,10 +68,10 @@ class BackupService {
 
     await Share.shareXFiles(
       [XFile(file.path)],
-      subject: 'Vittix IRC Backup',
+      subject: 'VIRC Backup',
       text: includePasswords
-          ? 'Encrypted Vittix IRC backup'
-          : 'Vittix IRC server profiles and settings backup',
+          ? 'Encrypted VIRC backup'
+          : 'VIRC server profiles and settings backup',
     );
   }
 

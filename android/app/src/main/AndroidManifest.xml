@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
     <application
-        android:label="Vittix IRC"
+        android:label="VIRC"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <service

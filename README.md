@@ -1,8 +1,8 @@
-# Vittix IRC
+# VIRC — Vittix IRC Chat Client
 
 A modern, feature-rich, multi-server Internet Relay Chat (IRC) client for mobile (Android/iOS), built with Flutter. 
 
-Vittix IRC is designed to provide a robust mobile chatting experience with a clean "shell and drawer" UI, background lifecycle management, and built-in support for modern IRC features like SASL and Bouncers.
+VIRC is designed to provide a robust mobile chatting experience with a clean "shell and drawer" UI, background lifecycle management, and built-in support for modern IRC features like SASL and Bouncers.
 
 ## ✨ Features
 
@@ -19,7 +19,7 @@ Vittix IRC is designed to provide a robust mobile chatting experience with a cle
 
 ## 🚀 Supported Commands
 
-Vittix IRC supports a wide array of standard IRC slash commands directly from the chat input:
+VIRC supports a wide array of standard IRC slash commands directly from the chat input:
 
 * `/join #channel [key]` - Join a channel
 * `/part [#channel]` - Leave a channel

@@ -11,7 +11,7 @@ class KeepAliveService {
 
   static bool _running = false;
 
-  static Future<void> start({String title = 'Vittix IRC'}) async {
+  static Future<void> start({String title = 'VIRC'}) async {
     if (_running) return;
 
     if (defaultTargetPlatform != TargetPlatform.android) return;

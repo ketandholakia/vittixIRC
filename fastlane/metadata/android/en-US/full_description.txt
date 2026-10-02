@@ -1,4 +1,4 @@
-Vittix IRC is a modern, feature-rich multi-server IRC client for Android.
+VIRC (Vittix IRC Chat Client) is a modern, feature-rich multi-server IRC client for Android.
 
 Features:
 
@@ -15,4 +15,4 @@ Features:
 * Slash commands: /join, /part, /msg, /query, /nick, /me, /topic, /identify, /whois, moderation commands and more
 * Nickname and command auto-complete
 
-Vittix IRC is free and open source software. There are no ads, no analytics and no tracking — your messages go directly to the IRC server you choose.
+VIRC is free and open source software. There are no ads, no analytics and no tracking — your messages go directly to the IRC server you choose.

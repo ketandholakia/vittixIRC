@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- VIRC splash base colors (see drawable/ and drawable-night/ launch_background) -->
+    <color name="splash_background_light">#B6D5F6</color>
+    <color name="splash_background_dark">#08305C</color>
+</resources>

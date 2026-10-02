@@ -1,4 +1,4 @@
-# Vittix IRC — fdroiddata build recipe (draft)
+# VIRC (Vittix IRC Chat Client) — fdroiddata build recipe (draft)
 #
 # How to use:
 #   1. Rename this file to <appid>.yml (matching the app's final Application ID).
@@ -18,7 +18,7 @@ SourceCode: https://github.com/<github-user>/vittixIRC
 IssueTracker: https://github.com/<github-user>/vittixIRC/issues
 Changelog: https://github.com/<github-user>/vittixIRC/releases
 
-AutoName: Vittix IRC
+AutoName: VIRC
 
 RepoType: git
 Repo: https://github.com/<github-user>/vittixIRC.git
