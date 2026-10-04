@@ -58,3 +58,8 @@ app.*.map.json
 
 # Branding pack source folder (integrated into assets/branding/; local copy only)
 /VIRC_Flutter_Branding_Pack/
+
+# Release signing (never commit)
+/android/key.properties
+/android/*.jks
+/android/*.keystore
