@@ -62,6 +62,13 @@ jobs:
           .flutter/bin/flutter build apk --release --split-per-abi --target-platform="android-x64"
           ls -la build/app/outputs/flutter-apk/
 
+      - name: Strip 'Dependency metadata' signing block (F-Droid scanner compliance)
+        run: |
+          python3 .github/scripts/strip_dependency_metadata.py \
+            build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk \
+            build/app/outputs/flutter-apk/app-arm64-v8a-release.apk \
+            build/app/outputs/flutter-apk/app-x86_64-release.apk
+
       - name: Upload split APK artifacts
         uses: actions/upload-artifact@v4
         with:
