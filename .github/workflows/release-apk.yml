@@ -1,0 +1,61 @@
+name: Release APK (F-Droid reproducible environment)
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - name: Checkout with submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install Android NDK r28c
+        run: |
+          set -euo pipefail
+          SDKMANAGER="$(find "$ANDROID_HOME/cmdline-tools" -name sdkmanager -type f 2>/dev/null | sort | tail -1)"
+          [ -n "$SDKMANAGER" ] || { echo "sdkmanager not found"; exit 1; }
+          yes | "$SDKMANAGER" --licenses > /dev/null 2>&1 || true
+          "$SDKMANAGER" "ndk;28.2.13676358"
+          echo "NDK installed: $ANDROID_HOME/ndk/28.2.13676358"
+
+      - name: Build split APKs (F-Droid-compatible environment)
+        run: |
+          set -euo pipefail
+          echo "Workspace: $(pwd)"
+          java -version 2>&1 | head -3
+          export PUB_CACHE=$(pwd)/.pub-cache
+          .flutter/bin/flutter --version
+          .flutter/bin/flutter config --no-analytics
+          .flutter/bin/flutter pub get --enforce-lockfile
+          sed -i -e 's/-Wl,/-Wl,--build-id=none,/' $PUB_CACHE/hosted/pub.dev/jni-*/src/CMakeLists.txt
+          .flutter/bin/flutter build apk --release --split-per-abi --target-platform="android-arm"
+          .flutter/bin/flutter build apk --release --split-per-abi --target-platform="android-arm64"
+          .flutter/bin/flutter build apk --release --split-per-abi --target-platform="android-x64"
+          ls -la build/app/outputs/flutter-apk/
+
+      - name: Upload split APK artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: virc-split-apks
+          path: |
+            build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
+            build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
+            build/app/outputs/flutter-apk/app-x86_64-release.apk
+          if-no-files-found: error
