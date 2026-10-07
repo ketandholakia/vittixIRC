@@ -15,4 +15,6 @@ Features:
 * Slash commands: /join, /part, /msg, /query, /nick, /me, /topic, /identify, /whois, moderation commands and more
 * Nickname and command auto-complete
 
-VIRC is free and open source software. There are no ads, no analytics and no tracking — your messages go directly to the IRC server you choose.
+VIRC is free and open source software. There are no ads, no analytics and no tracking - your messages go directly to the IRC server you choose.
+
+Network notes: image previews for links posted in channels are fetched directly from your device and can be disabled in Settings. File uploads are sent only to the upload host you configure - a default is preset, and imgur, catbox and litterbox presets are included.
