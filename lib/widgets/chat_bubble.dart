@@ -81,7 +81,7 @@ class _ChatBubbleState extends State<ChatBubble> {
     final spans = <InlineSpan>[];
     var cursor = 0;
 
-    for (final match in UrlHelper.urlRegex.allMatches(text)) {
+    for (final match in UrlHelper.matches(text)) {
       if (match.start > cursor) {
         spans.add(TextSpan(
           text: text.substring(cursor, match.start),

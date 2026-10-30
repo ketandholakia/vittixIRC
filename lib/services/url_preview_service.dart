@@ -1,5 +1,7 @@
 import 'package:http/http.dart' as http;
 
+import '../utils/url_helper.dart';
+
 class UrlPreviewData {
   final String? title;
   final String? description;
@@ -23,13 +25,11 @@ class UrlPreviewService {
       RegExp(r'<meta property="og:description" content="([^"]+)"');
   static final RegExp _imageRegex =
       RegExp(r'<meta property="og:image" content="([^"]+)"');
-  static final RegExp _urlRegex = RegExp(
-      r'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)');
 
-  /// Extracts the first URL from a message string
+  /// Extracts the first URL from a message string.
   static String? extractFirstUrl(String message) {
-    final match = _urlRegex.firstMatch(message);
-    return match?.group(0);
+    final urls = UrlHelper.extractUrls(message);
+    return urls.isEmpty ? null : urls.first;
   }
 
   /// Fetches the webpage in the background and parses OpenGraph tags
