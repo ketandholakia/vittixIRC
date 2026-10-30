@@ -15,7 +15,7 @@ Repo: https://github.com/ketandholakia/vittixIRC.git
 Builds:
   - versionName: 1.0.0
     versionCode: 11
-    commit: b7b63cfe1425c1c604186f8ee28644aea7a46587
+    commit: 585a387e9eb85826d875e1cd1186949f3791a6c7
     submodules: true
     sudo:
       - mkdir -p /home/runner/work/vittixIRC
@@ -52,7 +52,7 @@ Builds:
 
   - versionName: 1.0.0
     versionCode: 12
-    commit: b7b63cfe1425c1c604186f8ee28644aea7a46587
+    commit: 585a387e9eb85826d875e1cd1186949f3791a6c7
     submodules: true
     sudo:
       - mkdir -p /home/runner/work/vittixIRC
@@ -89,7 +89,7 @@ Builds:
 
   - versionName: 1.0.0
     versionCode: 13
-    commit: b7b63cfe1425c1c604186f8ee28644aea7a46587
+    commit: 585a387e9eb85826d875e1cd1186949f3791a6c7
     submodules: true
     sudo:
       - mkdir -p /home/runner/work/vittixIRC
