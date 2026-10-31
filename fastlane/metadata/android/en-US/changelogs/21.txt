@@ -1,0 +1,1 @@
+Fixed link handling for IP addresses and ports. URLs such as https://192.168.1.10:8443/image.png are now detected as a whole, so the file name is no longer treated as a separate domain; link previews use the same parser.
