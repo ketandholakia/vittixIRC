@@ -1,12 +1,17 @@
 # Publishing VIRC (Vittix IRC) on F-Droid
 
-Status: source published at <https://github.com/ketandholakia/vittixIRC>
-(tag `v1.0.0`); fdroiddata MR open:
-<https://gitlab.com/fdroid/fdroiddata/-/merge_requests/50931>.
-This file complements `fdroid/fdroiddata/` (the build recipe).
+Status: **published.** VIRC 1.0.1 (versionCodes 21-23) is live in the official
+F-Droid repository since 2026-11-09:
+<https://f-droid.org/packages/io.github.ketandholakia.virc/>
+
+Source: <https://github.com/ketandholakia/vittixIRC>. Original submission:
+fdroiddata MR [!50931](https://gitlab.com/fdroid/fdroiddata/-/merge_requests/50931)
+(merged). This file complements `fdroid/fdroiddata/` (the build recipe).
 
 ## What is already done
 
+- [x] **Listed on F-Droid** — 1.0.1 built and signed by F-Droid, published
+      2026-11-09; listing page and badge are live.
 - [x] **Source published** — <https://github.com/ketandholakia/vittixIRC>,
       tagged `v1.0.0` (2026-10-02).
 - [x] **License** — GPL-3.0-or-later; `LICENSE` file at the repo root.
@@ -113,8 +118,12 @@ Optionally add `fastlane/metadata/android/en-US/changelogs/<versionCode>.txt`
 
 ## Later / optional polish
 
-- **Screenshots** — add `fastlane/metadata/android/en-US/images/phoneScreenshots/`.
-  Capture from a device/emulator (portrait, ideally 1080×1920+).
+- **Screenshots (now the main gap)** — the live listing currently shows no
+  screenshots. Add `fastlane/metadata/android/en-US/images/phoneScreenshots/`
+  (portrait, ideally 1080×1920+, 2-8 images), then rebuild/re-tag so F-Droid
+  picks them up from the tagged commit. Capture from a device/emulator; the
+  drawer shell, a channel with messages, and server settings are the three
+  shots that explain the app fastest.
 - **In-app logo** — the wordmark/icon assets are bundled under `assets/branding/`
   and can be shown in-app (e.g. empty states or an about screen).
 - **Reproducible builds** — publish your own signed release APK; if F-Droid can

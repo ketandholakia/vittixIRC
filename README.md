@@ -1,5 +1,7 @@
 # VIRC — Vittix IRC Chat Client
 
+[![Get it on F-Droid](https://f-droid.org/badge/get-it-on.png)](https://f-droid.org/packages/io.github.ketandholakia.virc/)
+
 A modern, feature-rich, multi-server Internet Relay Chat (IRC) client for mobile (Android/iOS), built with Flutter. 
 
 VIRC is designed to provide a robust mobile chatting experience with a clean "shell and drawer" UI, background lifecycle management, and built-in support for modern IRC features like SASL and Bouncers.
@@ -67,6 +69,10 @@ lib/
 * Android Studio / Xcode (for emulation/compilation)
 
 ### Installation
+
+**Android:** install VIRC from F-Droid — <https://f-droid.org/packages/io.github.ketandholakia.virc/>.
+
+**From source:**
 
 1. Clone the repository:
    ```bash
