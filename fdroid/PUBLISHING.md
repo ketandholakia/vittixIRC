@@ -30,6 +30,8 @@ fdroiddata MR [!50931](https://gitlab.com/fdroid/fdroiddata/-/merge_requests/509
 - [x] **Branding** — VIRC branding pack integrated: launcher icons (all
       densities), Android adaptive icon (incl. the Android 13 monochrome layer),
       native launch splash (light/dark), fastlane listing icon, and app naming.
+- [x] **Screenshots** — four portrait 1080×2400 captures from a real build on
+      an Android 17 emulator (chat, server list, add-server form, settings).
 - [x] **Build recipe** at `fdroid/fdroiddata/io.github.ketandholakia.virc.yml`.
 - [x] **Workspace/agent files excluded from git** — they must not become public
       when the repository is pushed (AGENTS.md, SOUL.md, USER.md, IDENTITY.md,
@@ -118,12 +120,12 @@ Optionally add `fastlane/metadata/android/en-US/changelogs/<versionCode>.txt`
 
 ## Later / optional polish
 
-- **Screenshots (now the main gap)** — the live listing currently shows no
-  screenshots. Add `fastlane/metadata/android/en-US/images/phoneScreenshots/`
-  (portrait, ideally 1080×1920+, 2-8 images), then rebuild/re-tag so F-Droid
-  picks them up from the tagged commit. Capture from a device/emulator; the
-  drawer shell, a channel with messages, and server settings are the three
-  shots that explain the app fastest.
+- **Screenshots** — done: four real 1080×2400 captures (chat, server list,
+  add-server form, settings) live in
+  `fastlane/metadata/android/en-US/images/phoneScreenshots/1-4.png`.
+  They ship with the next tagged release, not retroactively to 1.0.1.
+  Optional later: a tablet set (`sevenInchScreenshots/`) and a feature graphic
+  (`featureGraphic.png`, landscape) for the Latest tab.
 - **In-app logo** — the wordmark/icon assets are bundled under `assets/branding/`
   and can be shown in-app (e.g. empty states or an about screen).
 - **Reproducible builds** — publish your own signed release APK; if F-Droid can
