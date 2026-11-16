@@ -32,6 +32,10 @@ fdroiddata MR [!50931](https://gitlab.com/fdroid/fdroiddata/-/merge_requests/509
       native launch splash (light/dark), fastlane listing icon, and app naming.
 - [x] **Screenshots** — four portrait 1080×2400 captures from a real build on
       an Android 17 emulator (chat, server list, add-server form, settings).
+      Raw captures live in `fastlane/metadata/android/en-US/images/phoneScreenshots/`;
+      branded 1080×1920 variants (logo, tagline, phone frame) live in
+      `fdroid/screenshots-branded/purple/` and `.../blue/`. To ship a branded
+      set instead, copy the chosen folder over the fastlane directory.
 - [x] **Build recipe** at `fdroid/fdroiddata/io.github.ketandholakia.virc.yml`.
 - [x] **Workspace/agent files excluded from git** — they must not become public
       when the repository is pushed (AGENTS.md, SOUL.md, USER.md, IDENTITY.md,
