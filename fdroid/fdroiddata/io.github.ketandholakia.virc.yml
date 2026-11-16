@@ -13,9 +13,9 @@ RepoType: git
 Repo: https://github.com/ketandholakia/vittixIRC.git
 
 Builds:
-  - versionName: 1.0.1
-    versionCode: 21
-    commit: 429c7e13e5e5888fa525d97d40f735720c9eba1f
+  - versionName: 1.0.2
+    versionCode: 31
+    commit: b6d427444180fd8c295636514971f016ea38ce55
     submodules: true
     sudo:
       - mkdir -p /home/runner/work/vittixIRC
@@ -50,9 +50,9 @@ Builds:
       - mv $repo io.github.ketandholakia.virc
     ndk: r28c
 
-  - versionName: 1.0.1
-    versionCode: 22
-    commit: 429c7e13e5e5888fa525d97d40f735720c9eba1f
+  - versionName: 1.0.2
+    versionCode: 32
+    commit: b6d427444180fd8c295636514971f016ea38ce55
     submodules: true
     sudo:
       - mkdir -p /home/runner/work/vittixIRC
@@ -87,9 +87,9 @@ Builds:
       - mv $repo io.github.ketandholakia.virc
     ndk: r28c
 
-  - versionName: 1.0.1
-    versionCode: 23
-    commit: 429c7e13e5e5888fa525d97d40f735720c9eba1f
+  - versionName: 1.0.2
+    versionCode: 33
+    commit: b6d427444180fd8c295636514971f016ea38ce55
     submodules: true
     sudo:
       - mkdir -p /home/runner/work/vittixIRC
@@ -133,5 +133,5 @@ VercodeOperation:
   - '%c * 10 + 2'
   - '%c * 10 + 3'
 UpdateCheckData: pubspec.yaml|version:\s.+\+(\d+)|.|version:\s(.+)\+
-CurrentVersion: 1.0.1
-CurrentVersionCode: 23
+CurrentVersion: 1.0.2
+CurrentVersionCode: 33
